@@ -1,4 +1,4 @@
-from LinearApproximator import LinearApproximator, square
+from LinearScikit import LinearApproximator
 import numpy as np
 from matplotlib import pyplot as plt
 # from LinearExtended import LinearExtended, step_perpendicular, divide_set
@@ -46,16 +46,16 @@ def spline_test_2d():
     ax.set_ylabel('y')
     ax.set_zlabel('z')
 
-    lina = LinearApproximator([0, 0, 0])
-    lina.update_parameters(None, training_Set, d_square, 0.01)
-    ya = np.zeros(shape=(30, 30))
-    for i in range(30):
-        for j in range(30):
-            ya[i][j] = lina.evaluate([X[i][j], Y[i][j]])
-    ax.plot_wireframe(X, Y, ya, color='pink')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('ya')
+    # lina = LinearApproximator([0, 0, 0])
+    # lina.update_parameters(None, training_Set, d_square)
+    # ya = np.zeros(shape=(30, 30))
+    # for i in range(30):
+    #     for j in range(30):
+    #         ya[i][j] = lina.evaluate([X[i][j], Y[i][j]])
+    # ax.plot_wireframe(X, Y, ya, color='pink')
+    # ax.set_xlabel('x')
+    # ax.set_ylabel('y')
+    # ax.set_zlabel('ya')
 
     ls = LinearSpline()
     ls.approximate(training_set=training_Set, lina=None, max_error=15, step=0.011, f=d_square)
@@ -67,4 +67,4 @@ def spline_test_2d():
     plt.show()
 
 
-spline_test_1d()
+spline_test_2d()
