@@ -34,6 +34,7 @@ class ModelSelector:
         if parent_node.data.__class__ == LinearApproximator:
             return -1
         node = self.tree.create_node(parent=parent, data=new_node)
+        # print("Adding new node to parent: {parent_node}, with parameters {parameters}".format(parent_node= parent, parameters = new_node.parameters))
         return node.identifier
 
     def select_model(self, x):
@@ -69,6 +70,7 @@ def step_perpendicular(training_set: list, point_index: int):
         for cord in step_vector:
             surface_coordinates.append(cord)
     surface_coordinates.append(-(np.sum(np.multiply(step_vector, break_point))))
+    # print("Creating division surface on points: {x1}, {x2}".format(x1 = previous_point, x2 = break_point))
     return surface_coordinates
 
 

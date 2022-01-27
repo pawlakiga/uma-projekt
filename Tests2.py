@@ -19,18 +19,53 @@ def d_sin(x):
     return sin
 
 
-def test_2d(f: function):
-    low_point = -10
-    high_point = 10
-    training_set_len = 400
-    points_no = 50
-    max_error = 0.003
-    step = 0.05
-    init_params = [0, 0, 0]
+def test_2d(f: function, training_Set, low_point, high_point, points_no, max_error):
+    # low_point = -100
+    # high_point = 100
+    # training_set_len = 400
+    # points_no = 50
+    # max_error = 1e-8
+    # step = 0.05
+    # init_params = [0, 0, 0]
+    # #
+    # training_Set = []
+    # for i in range(training_set_len):
+    #     training_Set.append(init_method([2, low_point, high_point]))
 
-    training_Set = []
-    for i in range(training_set_len):
-        training_Set.append(init_method([2, low_point, high_point]))
+    xx = np.linspace(low_point, high_point, num=points_no)
+    yy = np.linspace(low_point, high_point, num=points_no)
+    X, Y = np.meshgrid(xx, yy)
+    Z = np.zeros(shape=(points_no, points_no))
+    for i in range(points_no):
+        for j in range(points_no):
+            Z[i][j] = f([X[i][j], Y[i][j]])
+    fig = plt.figure()
+    ax = plt.axes(projection="3d")
+    ax.plot_wireframe(X, Y, Z, color='green')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    ls = LinearSpline()
+    ls.approximate(training_set=training_Set, lina=None, max_error=max_error, f=f)
+    ys = np.zeros(shape=(points_no, points_no))
+    for i in range(points_no):
+        for j in range(points_no):
+            ys[i][j] = ls.evaluate([X[i][j], Y[i][j]])
+    ax.plot_wireframe(X, Y, ys, color='blue')
+
+    for ix in range(0, len(training_Set), 20):
+        x = training_Set[ix]
+        fx = f(x)
+        ax.scatter(x[0],x[1],fx,'r.')
+    plt.show()
+
+
+def test_axes(f:function, training_Set, low_point, high_point, points_no, max_error):
+
+    # training_Set = []
+    # for i in range(training_set_len):
+    #     training_Set.append(init_method([2, low_point, high_point]))
 
     xx = np.linspace(low_point, high_point, num=points_no)
     yy = np.linspace(low_point, high_point, num=points_no)
@@ -57,63 +92,19 @@ def test_2d(f: function):
     # ax.set_ylabel('y')
     # ax.set_zlabel('ya')
 
-    ls = LinearSpline()
-    ls.approximate(training_set=training_Set, lina=None, max_error=max_error, step=step, f=f)
+    ls = LinearAxes()
+    ls.approximate(training_set=training_Set, max_error=max_error, f=f)
     ys = np.zeros(shape=(points_no, points_no))
     for i in range(points_no):
         for j in range(points_no):
             ys[i][j] = ls.evaluate([X[i][j], Y[i][j]])
     ax.plot_wireframe(X, Y, ys, color='blue')
-    plt.show()
-
-
-def test_axes(f:function):
-    low_point = -10
-    high_point = 10
-    training_set_len = 400
-    points_no = 50
-    max_error = 0.003
-    step = 0.05
-    init_params = [0, 0, 0]
-
-    training_Set = []
-    for i in range(training_set_len):
-        training_Set.append(init_method([2, low_point, high_point]))
-
-    xx = np.linspace(low_point, high_point, num=points_no)
-    yy = np.linspace(low_point, high_point, num=points_no)
-    X, Y = np.meshgrid(xx, yy)
-    Z = np.zeros(shape=(points_no, points_no))
-    for i in range(points_no):
-        for j in range(points_no):
-            Z[i][j] = f([X[i][j], Y[i][j]])
-    fig = plt.figure()
-    ax = plt.axes(projection="3d")
-    ax.plot_wireframe(X, Y, Z, color='green')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
-
-    # lina = LinearApproximator([0, 0, 0])
-    # lina.update_parameters(None, training_Set, f, step)
-    # ya = np.zeros(shape=(points_no,points_no))
-    # for i in range(points_no):
-    #     for j in range(points_no):
-    #         ya[i][j] = lina.evaluate([X[i][j], Y[i][j]])
-    # ax.plot_wireframe(X, Y, ya, color='pink')
-    # ax.set_xlabel('x')
-    # ax.set_ylabel('y')
-    # ax.set_zlabel('ya')
-
-    ls = LinearSpline()
-    ls.approximate(training_set=training_Set, max_error=max_error, f=f, lina = None, step = 0)
-    ys = np.zeros(shape=(points_no, points_no))
-    for i in range(points_no):
-        for j in range(points_no):
-            ys[i][j] = ls.evaluate([X[i][j], Y[i][j]])
-    ax.plot_wireframe(X, Y, ys, color='blue')
+    for ix in range(0, len(training_Set), 20):
+        x = training_Set[ix]
+        fx = f(x)
+        ax.scatter(x[0], x[1], fx, 'r.')
     plt.show()
 
 
 
-test_axes(f10)
+# test_axes(f5)

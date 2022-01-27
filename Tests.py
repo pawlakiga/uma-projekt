@@ -58,12 +58,21 @@ def spline_test_2d():
     # ax.set_zlabel('ya')
 
     ls = LinearSpline()
-    ls.approximate(training_set=training_Set, lina=None, max_error=15, step=0.011, f=d_square)
+    ls.approximate(training_set=training_Set, lina=None, max_error=15, f=d_square)
     ys = np.zeros(shape=(30, 30))
     for i in range(30):
         for j in range(30):
             ys[i][j] = ls.evaluate([X[i][j], Y[i][j]])
     ax.plot_wireframe(X, Y, ys, color='blue')
+    #
+
+    for ix in range(0, len(training_Set), 20):
+        x = training_Set[ix]
+        fx = d_square(x)
+        ax.scatter(x[0],x[1],fx,'r.')
+
+
+
     plt.show()
 
 
