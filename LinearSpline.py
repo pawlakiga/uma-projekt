@@ -45,7 +45,7 @@ class LinearSpline:
                                                                     parent_node=div_node)
 
             if t_set_left == -1 :
-                print("Training set cannot be divided - adding new leaf for set:  {len}".format(len=len(training_set)))
+                # print("Training set cannot be divided - adding new leaf for set:  {len}".format(len=len(training_set)))
                 self.model_selector.add_node(new_node=lina, parent=d_node)
                 return
             la_left = self.local_approximator(t_set_left, f)
@@ -54,9 +54,11 @@ class LinearSpline:
             la_right = self.local_approximator(t_set_right, f)
             self.approximate(f=f, training_set=t_set_right, lina=la_right, max_error=max_error, div_node=d_node)
         else:
-            print("Error = {error} is smaller than max_error - adding new leaf for set: {len}".format(len=len(training_set), error = np.mean(ms_errors)))
+            # print("Error = {error} is smaller than max_error - adding new leaf for set: {len}".format(len=len(training_set), error = np.mean(ms_errors)))
             self.model_selector.add_node(new_node=lina, parent=div_node)
-        return
+        final_error = np.mean(self.get_errors(training_set,f, values))
+        best_value, best_index = self.get_best(training_set)
+        return final_error, best_value, best_index
 
     def divide_set(self,
                    training_set,
@@ -136,3 +138,22 @@ class LinearSpline:
         """
         la : LinearApproximator = self.model_selector.select_model(x)
         return la.evaluate(x)
+
+    def get_errors(self, training_set, f: function,  values = None):
+        mse = []
+        for x in training_set:
+            if values is not None:
+                y_f = values[training_set.index(x)]
+            else:
+                y_f = f(x)
+            y_a = self.evaluate(x)
+            mse.append(np.square(y_f - y_a))
+        return mse
+
+    def get_best(self, training_set):
+        y_a = []
+        for x in training_set:
+            y_a.append(self.evaluate(x))
+        return min(y_a), y_a.index(min(y_a))
+
+

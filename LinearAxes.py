@@ -26,6 +26,10 @@ class LinearAxes (LinearSpline):
                 training_set_ax = [row[ax] for row in training_set]
                 self.approximate_axis(ax = ax, training_set_ax=training_set_ax, lina=ax_approximators[ax], max_error=max_error, values=np.multiply(values,1/axes_no).tolist(), f =f, ax_wage=1/axes_no)
 
+        final_error = np.mean(self.get_errors(training_set, f))
+        best_value, best_index = self.get_best(training_set)
+        return final_error, best_value, best_index
+
     def approximate_axis(self, ax: int, training_set_ax,lina : LinearApproximator,
                          max_error, values, f : function, ax_wage, div_node = ""):
 
@@ -69,13 +73,23 @@ class LinearAxes (LinearSpline):
         return y
 
     def get_errors(self, training_set, f : function):
-        y_f = self.get_func_values(self,training_set,f)
-        y_a = []
+        y_f = self.get_func_values(training_set=training_set,f=f)
+        mse = []
         for x in training_set:
-            y_a.append(self.evaluate(x))
+            y_a = self.evaluate(x)
+            mse.append(np.square(y_f - y_a))
+        return mse
+
 
     def divide_values(self, left_indexes, right_indexes, values):
         left_values = [values[i_l] for i_l in left_indexes]
         right_values = [values[i_r] for i_r in right_indexes]
         return left_values, right_values
+
+    # def get_best(self, training_set):
+    #     y_a = []
+    #     for x in training_set:
+    #         y_a.append(self.evaluate(x))
+    #     return min(y_a), y_a.index(min(y_a))
+
 
